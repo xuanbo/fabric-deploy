@@ -1,0 +1,74 @@
+---
+version: '2'
+
+volumes:
+  peer0.org2.example.com:
+
+networks:
+  blockchain:
+    external: true
+
+services:
+  peer0.org2.example.com:
+    container_name: peer0.org2.example.com
+    extends:
+      file: ../base/peer-base.yaml
+      service: peer-base
+    environment:
+      - TZ=Asia/Shanghai
+      - CORE_PEER_ID=peer0.org2.example.com
+      - CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org2.example.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_LOCALMSPID=Org2MSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp:/etc/hyperledger/fabric/msp
+        - ./crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.org2.example.com:/var/hyperledger/production
+    ports:
+      - 7051:7051
+    networks:
+      - blockchain
+    # orderer节点地址
+    extra_hosts:
+      - orderer1.example.com:10.211.55.10
+      - orderer2.example.com:10.211.55.10
+      - orderer3.example.com:10.211.55.10
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:1.4.4
+    tty: true
+    stdin_open: true
+    environment:
+      - TZ=Asia/Shanghai
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./../chaincode/:/opt/gopath/src/github.com/chaincode
+        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./../scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+    depends_on:
+      - peer0.org2.example.com
+    networks:
+      - blockchain
+    # orderer节点地址
+    extra_hosts:
+      - orderer1.example.com:10.211.55.10
+      - orderer2.example.com:10.211.55.10
+      - orderer3.example.com:10.211.55.10
