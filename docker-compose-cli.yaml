@@ -27,6 +27,8 @@ services:
         - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/fabric/msp
         - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/etc/hyperledger/fabric/tls
         - peer0.org1.example.com:/var/hyperledger/production
+    ports:
+      - 7051:7051
     networks:
       - blockchain
     # orderer节点地址

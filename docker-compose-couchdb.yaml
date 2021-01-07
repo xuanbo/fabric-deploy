@@ -38,6 +38,8 @@ services:
         - peer0.org1.example.com:/var/hyperledger/production
     depends_on:
       - couchdb0
+    ports:
+      - 7051:7051
     networks:
       - blockchain
     # orderer节点地址
