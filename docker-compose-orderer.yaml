@@ -14,7 +14,7 @@ services:
   orderer1.example.com:
     container_name: orderer1.example.com
     extends:
-      file: base/peer-base.yaml
+      file: base/orderer-base.yaml
       service: orderer-base
     volumes:
         - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
@@ -34,7 +34,7 @@ services:
   orderer2.example.com:
     container_name: orderer2.example.com
     extends:
-      file: base/peer-base.yaml
+      file: base/orderer-base.yaml
       service: orderer-base
     volumes:
         - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
@@ -54,7 +54,7 @@ services:
   orderer3.example.com:
     container_name: orderer3.example.com
     extends:
-      file: base/peer-base.yaml
+      file: base/orderer-base.yaml
       service: orderer-base
     volumes:
         - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
