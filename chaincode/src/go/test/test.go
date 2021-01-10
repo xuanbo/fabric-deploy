@@ -32,7 +32,7 @@ func (t *Asset) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 }
 
 func set(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	if len(args) != 3 {
+	if len(args) != 2 {
 		return shim.Error("Incorrect arguments, expecting a key and a value")
 	}
 
